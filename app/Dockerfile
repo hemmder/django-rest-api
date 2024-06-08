@@ -10,7 +10,8 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+    && apk add --no-cache gcc musl-dev \
+    mariadb-dev
 
 # install dependencies
 RUN pip install --upgrade pip
@@ -19,3 +20,7 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY .. .
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

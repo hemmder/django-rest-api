@@ -9,18 +9,28 @@ services:
       - ./app/:/usr/src/app/
     ports:
       - 8000:8000
-    env_file:
-      - ./.env.dev
-    depends_on:
-      - db
-  db:
-    image: postgres:13.0-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=hello_django
-      - POSTGRES_PASSWORD=hello_django
-      - POSTGRES_DB=hello_django_dev
+      - DEBUG=1
+      - SECRET_KEY=foo
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - SQL_ENGINE=django.db.backends.mysql
+      - SQL_DATABASE=dev_test
+      - SQL_USER=npcxdevadmin
+      - SQL_PASSWORD=Uf_-e!.3FDhu
+      - SQL_HOST=dev-npcx-usage.cazgawcwujhc.us-east-1.rds.amazonaws.com
+      - SQL_PORT=3306    
 
-volumes:
-  postgres_data:
+#     depends_on:
+#       - db
+#   db:
+#     image: postgres:13.0-alpine
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data/
+#     environment:
+#       - POSTGRES_USER=hello_django
+#       - POSTGRES_PASSWORD=hello_django
+#       - POSTGRES_DB=hello_django_dev
+
+# volumes:
+#   postgres_data:
+

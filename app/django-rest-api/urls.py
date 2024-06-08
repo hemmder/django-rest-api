@@ -21,9 +21,9 @@ from drf_yasg.views import get_schema_view
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Django REST API",
-        default_version="v1",
-        description="Example Django REST API with GET, POST, PUT, DELETE methods.",
+        title="NPCx REST API",
+        default_version="v0",
+        description="CI/CD Pipeline Test Django REST API with GET, POST, PUT, DELETE methods.",
     ),
     public=True,
 )
