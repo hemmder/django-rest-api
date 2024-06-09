@@ -45,13 +45,13 @@ jobs:
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
           IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
-          sed -i "s/<IMAGE_URI>/$IMAGE_URI/g" Dockerrun.aws.json
+          sed -i "s|<IMAGE_URI>|$IMAGE_URI|" Dockerrun.aws.json
           
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
     
-      - name: Deploy to EB
+      - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
