@@ -38,12 +38,14 @@ jobs:
       - name: Build, tag, and push Docker image
         id: build-image
         run: |
-          IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          COMMIT=$(echo "${{ github.sha }}" | cut -c 1-7)
+          IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
+          echo $IMAGE_TAG
+          echo $COMMIT
           cd app
-          docker build -t npcx-ecr-repo .
-          docker tag npcx-ecr-repo:latest 786800219325.dkr.ecr.us-east-1.amazonaws.com/npcx-ecr-repo:latest
-          docker tag npcx-ecr-repo:latest 786800219325.dkr.ecr.us-east-1.amazonaws.com/npcx-ecr-repo:${{ github.sha }}
-          docker push --all-tags 786800219325.dkr.ecr.us-east-1.amazonaws.com/npcx-ecr-repo
+          docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG $IMAGE_TAG:$COMMIT
+          docker push --all-tags $IMAGE_TAG
           
 
       - name: Install Elastic Beanstalk CLI
@@ -55,7 +57,10 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          pwd
+          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
+          env | grep IMAGE
+          cd ..
           sed -i "s/<IMAGE_URI>/$IMAGE_URI/g" Dockerrun.aws.json
           eb init -p docker ${{ secrets.ELASTIC_BEANSTALK_APP }} --region ${{ secrets.AWS_REGION }}
           eb use ${{ secrets.ELASTIC_BEANSTALK_ENV }}
