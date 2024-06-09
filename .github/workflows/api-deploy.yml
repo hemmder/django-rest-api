@@ -44,7 +44,7 @@ jobs:
           echo $COMMIT
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
           sed -i "s|<IMAGE_URI>|$IMAGE_URI|" Dockerrun.aws.json
           cat Dockerrun.aws.json
           
