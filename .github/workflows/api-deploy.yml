@@ -37,14 +37,16 @@ jobs:
         id: build-image
         run: |
           COMMIT=$(echo "${{ github.sha }}" | cut -c 1-7)
+          echo "COMMIT=$COMMIT" >> $GITHUB_ENV
           IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
           echo $IMAGE_TAG
           echo $COMMIT
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
+          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
           sed -i "s|<IMAGE_URI>|$IMAGE_URI|" Dockerrun.aws.json
-          echo Dockerrun.aws.json
+          cat Dockerrun.aws.json
           
 
       - name: Generate deployment package
