@@ -42,26 +42,22 @@ jobs:
           IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
           echo $IMAGE_TAG
           echo $COMMIT
-          cd app
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
+          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          sed -i "s/<IMAGE_URI>/$IMAGE_URI/g" Dockerrun.aws.json
           
 
-      - name: Install Elastic Beanstalk CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install awsebcli
-
-
-      - name: Deploy to Elastic Beanstalk
-        run: |
-          pwd
-          ls
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
-          echo $IMAGE_URI
-          sed -i "s/<IMAGE_URI>/$IMAGE_URI/g" Dockerrun.aws.json
-          eb init -p docker ${{ secrets.ELASTIC_BEANSTALK_APP }} --region ${{ secrets.AWS_REGION }}
-          eb use ${{ secrets.ELASTIC_BEANSTALK_ENV }}
-          eb deploy
-
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+    
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         application_name: dev-npcx-usage-api
+         environment_name: dev-npcx-usage-api-env
+         version_label: $COMMIT
+         region: us-east-1
+         deployment_package: deploy.zip
