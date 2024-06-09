@@ -27,8 +27,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          # role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/api-github-actions-role
-          # aws-region: us-east-1
 
       - name: Log in to Amazon ECR
         id: login-ecr
@@ -44,8 +42,9 @@ jobs:
           echo $COMMIT
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
           sed -i "s|<IMAGE_URI>|$IMAGE_URI|" Dockerrun.aws.json
+          echo Dockerrun.aws.json
           
 
       - name: Generate deployment package
@@ -58,6 +57,6 @@ jobs:
          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          application_name: dev-npcx-usage-api
          environment_name: dev-npcx-usage-api-env
-         version_label: $COMMIT
+         version_label: ${{ github.run_number }}
          region: us-east-1
          deployment_package: deploy.zip
