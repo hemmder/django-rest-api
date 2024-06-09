@@ -59,7 +59,6 @@ jobs:
           pwd
           ls
           IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
-          env | grep IMAGE_URI
           echo $IMAGE_URI
           sed -i "s/<IMAGE_URI>/$IMAGE_URI/g" Dockerrun.aws.json
           eb init -p docker ${{ secrets.ELASTIC_BEANSTALK_APP }} --region ${{ secrets.AWS_REGION }}
