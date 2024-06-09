@@ -39,6 +39,7 @@ jobs:
         id: build-image
         run: |
           IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          cd app
           docker build -t npcx-ecr-repo .
           docker tag npcx-ecr-repo:latest 786800219325.dkr.ecr.us-east-1.amazonaws.com/npcx-ecr-repo:latest
           docker tag npcx-ecr-repo:latest 786800219325.dkr.ecr.us-east-1.amazonaws.com/npcx-ecr-repo:${{ github.sha }}
