@@ -22,7 +22,7 @@ from drf_yasg.views import get_schema_view
 schema_view = get_schema_view(
     openapi.Info(
         title="NPCx REST API",
-        default_version="v4",
+        default_version="v5",
         description="CI/CD Pipeline Test Django REST API with GET, POST, PUT, DELETE methods.",
     ),
     public=True,

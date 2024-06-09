@@ -5,11 +5,6 @@ on:
     branches:
       - main
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -40,13 +35,10 @@ jobs:
           echo "COMMIT=$COMMIT" >> $GITHUB_ENV
           IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-          echo $IMAGE_TAG
-          echo $COMMIT
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
           IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$COMMIT
           sed -i "s|<IMAGE_URI>|$IMAGE_URI|" Dockerrun.aws.json
-          cat Dockerrun.aws.json
           
 
       - name: Generate deployment package
