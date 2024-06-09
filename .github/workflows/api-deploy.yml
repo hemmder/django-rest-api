@@ -1,11 +1,11 @@
 name: NPCx API CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types:
+      - closed
     branches: [ "main" ]
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
