@@ -44,8 +44,7 @@ jobs:
           echo $COMMIT
           cd app
           docker build -t $IMAGE_TAG .
-          docker tag $IMAGE_TAG $IMAGE_TAG:$COMMIT
-          docker push --all-tags $IMAGE_TAG
+          docker $IMAGE_TAG
           
 
       - name: Install Elastic Beanstalk CLI
